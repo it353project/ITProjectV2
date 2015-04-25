@@ -18,4 +18,5 @@ public interface SearchDAO {
     public ArrayList searchRequest(SearchBean aSearch);    
     public ViewBean detailsRequest(int thesisID);
     public ArrayList findSimilar(ViewBean aView);
+    public void incrementViewCount(int thesisID);
 }
