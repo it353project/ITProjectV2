@@ -113,7 +113,7 @@ public class SearchController {
         /* set the view */
         SearchDAO searchDAO = new SearchDAOImpl();
         finalSelection = searchDAO.detailsRequest(thesisID);
-
+        searchDAO.incrementViewCount(thesisID);
         return "viewDetails.xhtml";
     }
 

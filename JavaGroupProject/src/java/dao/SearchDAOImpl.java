@@ -221,6 +221,7 @@ public class SearchDAOImpl implements SearchDAO {
                 viewCollection.add(aView);
             }
             
+            
             rs.close();
             stmt.close();
             DBConn.close();
@@ -339,21 +340,18 @@ public class SearchDAOImpl implements SearchDAO {
                     aView.setUploadDate(df.format(rs.getDate("UPLOADDATE"))); 
                     
                     /* advance the cursor by one to peek at the next row */
-                   
+                    int nextThesisID;
+                    int rowSaver = rs.getRow();
                     while(rs.next() && nextCounter == 0){
-                        if (thesisID == Integer.parseInt(rs.getString("THESISID"))){
+                        nextThesisID = Integer.parseInt(rs.getString("THESISID"));
+                        if (thesisID == nextThesisID){
                             keywordCounter++;
-                        keywords[keywordCounter] = rs.getString("KEYWORD");
+                            keywords[keywordCounter] = rs.getString("KEYWORD");
                         }else{
+                            rs.absolute(rowSaver);
                             nextCounter = 1;
-                        }
-                        if(!rs.next()){
-                            EOF = true;
-                        }
-                    }
-                    if(!EOF){
-                        rs.previous();
-                    }
+                        } 
+                    }      
             }
             keywordCounter++;
             String[] keywordsFinal = new String[keywordCounter];
@@ -371,6 +369,11 @@ public class SearchDAOImpl implements SearchDAO {
         }
         
         return aView;
+    }
+    
+    public void incrementViewCount(int thesisID){
+        String sqlSelect = "SELECT IT353.THESIS.NOTIMESDOWN FROM IT353.THESIS WHERE IT353.THESIS.THESISID = " + thesisID;
+        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESDOWN ";
     }
     
 }
