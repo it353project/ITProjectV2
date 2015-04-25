@@ -181,7 +181,6 @@ public class SearchDAOImpl implements SearchDAO {
             int keywordCounter = 0;
             
             int thesisID = 0;
-
             
             while (rs.next()) {
                 aView = new ViewBean();
@@ -207,30 +206,18 @@ public class SearchDAOImpl implements SearchDAO {
                     aView.setUploadDate(df.format(rs.getDate("UPLOADDATE"))); 
                     int nextThesisID = 0;
                     
-                    /* advance the cursor by one to peek at the next row */               
-                        while(rs.next() && nextCounter == 0){
-                            nextThesisID = Integer.parseInt(rs.getString("THESISID"));
-                            if (thesisID == nextThesisID){
-                                keywordCounter++;
+                    /* advance the cursor by one to peek at the next row */
+                    int rowSaver = rs.getRow();
+                    while(rs.next() && nextCounter == 0){
+                        nextThesisID = Integer.parseInt(rs.getString("THESISID"));
+                        if (thesisID == nextThesisID){
+                            keywordCounter++;
                             keywords[keywordCounter] = rs.getString("KEYWORD");
-                            }else{
-                                nextCounter = 1;
-                            }
-                            if(!rs.next()){
-                                nextCounter = 1;
-                                EOF = true;
-                            }else{
-                                rs.previous();
-                            }
-                        }
-
-                    if(!EOF){
-                        rs.previous();
-                    }
-
-
-
-                                 
+                        }else{
+                            rs.absolute(rowSaver);
+                            nextCounter = 1;
+                        } 
+                    }                            
                 viewCollection.add(aView);
             }
             
