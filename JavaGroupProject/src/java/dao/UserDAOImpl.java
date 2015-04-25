@@ -154,7 +154,8 @@ public class UserDAOImpl implements UserDAO {
         String password = aLogin.getPassword();
 
         String query = "SELECT COUNT(*) AS USERCOUNT FROM IT353.ACCOUNT ";
-        query += "WHERE ulid  = '" + userName + "' AND password = '" + password + "' AND accountstatus = 'approved'";
+        query += "WHERE ulid  = '" + userName + "' AND password = '" + password +
+                "' AND accountstatus = 'approved'";
 
         int accountsCount = 0;
         try {
