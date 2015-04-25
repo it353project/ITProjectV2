@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Sign-Up Page</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="masterTemplate.xhtml">
+            <ui:define name="top_link">
+                <div align="right">
+                <h:link value="Log In" outcome="login.xhtml"/> |
+                <h:link value="Create Account" outcome="signUpPage1.xhtml"/>
+                </div>
+            </ui:define>
+            <ui:define name="content">
+                <br/><br/><center><h2>Create new Account</h2></center>
+                <div id="login" style ="width:400px; height:360px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+                    <center>
+                        <br/><br/><br/>
+                        <h:form id="signUpForm1">
+                            <p:inputText id="firstNameID" placeholder="First Name" value="#{signUpController.theModel.firstName}">
+                            </p:inputText> <br/><br/>
+
+                            <p:inputText id ="lastNameID" placeholder="Last Name" value="#{signUpController.theModel.lastName}">
+                            </p:inputText> <br/><br/>
+
+                            <p:inputText id="userNameID" placeholder="ULID" value="#{signUpController.theModel.userName}">
+                            </p:inputText> <br/><br/>
+
+                            <p:password placeholder="Password" redisplay="false" id="passwordID" value="#{signUpController.theModel.password}" >
+                            </p:password> <br/><br/>
+
+                            <p:inputText id="emailID" placeholder="ULID@ilstu.edu" value="#{signUpController.theModel.email}">
+                            </p:inputText> <br/><br/>
+
+                            <p:selectOneMenu id="accountTypeID"  style="width: 195px" value="#{signUpController.theModel.accountType}">
+                                <f:selectItem itemLabel="Account Type" itemValue=""/>
+                                <f:selectItem itemLabel="Student Account" itemValue="student"/>
+                                <f:selectItem itemLabel="Admin Account" itemValue="admin"/>
+                            </p:selectOneMenu> <br/> <br/>
+
+                            <div>
+                                <font color="red">
+                                    <em>                           
+                                        <h:outputText id="resultStr" value="#{signUpController.signUpValidaton}" />
+                                    </em>
+                                </font>
+                            </div><br/>
+
+                            <h:commandButton id="NextID" value="Next" action="#{signUpController.authenticatePage1()}" style="width:200px;height:25px"/> <br/><br/>
+
+                        </h:form></center>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

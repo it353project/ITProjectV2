@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:event listener="#{updateController.isLoggedInCheck}" type="preRenderView" />
+    <h:head>
+        <title>Upload My Work</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="masterTemplate.xhtml">
+            <ui:define name="top_link">
+                <div align="right">
+                    <h:form> <h:commandLink value="Log Out" action="#{loginController.logout()}"/> </h:form>                
+                </div>
+            </ui:define>
+            <ui:define name="content">
+                <center>
+                    <h:link value="Upload" outcome="uploadThesis.xhtml"/> | 
+                    <h:link value="Search" outcome="uploadThesis.xhtml"/> |
+                    <h:link value="Account" outcome="studentLandingPage.xhtml"/>
+                    <hr/>
+                </center>
+                <center><h2>Update Thesis</h2></center> <center>
+                    <div id="login" style ="width:920px; height:460px; margin: 0 auto; margin-top: 25px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+
+
+
+                        <h:form  enctype="multipart/form-data"> 
+                            <p:panelGrid style="background-color: #EAEBD8; border-color: black; border: hidden" >
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        <br/>Course Number
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <br/><p:inputText id="courseNoID"  value="#{updateController.theThesisModel.courseID}" readonly="true">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; vertical-align: bottom;  border-color: white; border: hidden">
+                                        Abstract
+                                    </p:column>
+
+                                </p:row> 
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Semester Completed
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="semsterID" value="#{updateController.theThesisModel.semesterName}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column rowspan="5" style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputTextarea rows="10" cols="62" id="abstractID" value="#{updateController.theThesisModel.projectAbstract}"/>
+                                    </p:column>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Title
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="topicID" value="#{updateController.theThesisModel.topic}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Keywords
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="keyWordsID"  value="#{updateController.theThesisModel.keywords}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Live Link
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="livelinkID"  value="#{updateController.theThesisModel.liveLink}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Screencast
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="screencastID"  value="#{updateController.theThesisModel.screencastLink}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Committee Chair
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8">
+                                        <p:inputText id="chairID"  value="#{updateController.theThesisModel.committeeChair}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column rowspan="3" style="background-color: #EAEBD8; vertical-align: top; text-align: right; border-color: white; border: hidden">
+                                        <br/>Committee Members 
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden"><br/>
+                                        <p:inputText id="member1ID"  value="#{updateController.theThesisModel.committeMember1}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column rowspan="3" style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <fieldset>
+                                            <legend>Documentation</legend><br/>
+                                            <div id="uploadthesisbutton">
+                                                <h:inputFile value="#{uploadController.file1}" /> 
+                                                <h:commandButton value="Upload Document" action="#{uploadController.upload()}"/>
+                                                <div><em>
+                                                        <h:commandLink value="#{uploadController.uploadFileName}" action="#{uploadController.uploadLink}"/>
+                                                        <h:outputText id="resultStr" value="#{uploadController.documentUploadResult}" /><br/><br/>
+                                                        
+                                                    </em></div>
+                                            </div>
+                                        </fieldset>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="member2ID"  value="#{updateController.theThesisModel.committeMember2}">
+                                        </p:inputText>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="member3ID"  value="#{updateController.theThesisModel.committeMember3}">
+                                        </p:inputText>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column colspan="3" style="background-color: #EAEBD8">
+                                        <br/>
+                                        <center>
+                                            <h:outputText id="formResultStr" value="#{updateController.updateStatus}" /><br/>
+                                            <h:commandButton value="Update" action="#{updateController.updateThis(loginController.theModel.userName)}"/>
+                                        </center>
+                                    </p:column>
+                                </p:row>
+
+                            </p:panelGrid>
+                        </h:form>
+                    </div></center>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+
+</html>

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Master Template</title>
+    </h:head>
+
+    <h:body>
+
+        <div id="top">
+            <ui:insert name="top">
+                <center style="font-size: 300%;">Illinois State University - Thesis Tracker</center>
+            </ui:insert>
+            <ui:insert name="top_link">
+                
+            </ui:insert>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
+        <div id="bottom">
+            <ui:insert name="bottom"><center>Copyright 2015</center></ui:insert>
+        </div>
+        
+        <c:if test="#{loginController.theModel.accountType=='student'}">
+
+            <p:dock position="bottom">
+                <p:menuitem value="Upload Thesis" icon="/resources/demo/images/dock/home.png" url="uploadThesis.xhtml"/>
+                <p:menuitem value="Search For Thesis" icon="/resources/demo/images/dock/home.png" url="searchForm.xhtml"/>
+            </p:dock>
+
+        </c:if>
+        
+        
+        <c:if test="#{loginController.theModel.accountType=='admin'}">
+
+            <p:dock position="bottom">
+                <p:menuitem value="Upload Thesis" icon="/resources/demo/images/dock/home.png" url="uploadThesis.xhtml"/>
+                <p:menuitem value="Search For Thesis" icon="/resources/demo/images/dock/home.png" url="searchForm.xhtml"/>
+            </p:dock>
+
+        </c:if>
+        
+        <c:if test="#{loginController.theModel.isLoggedIn=='NotLoggedIn'}">
+
+            <p:dock position="bottom">
+                <p:menuitem value="Log In" icon="/resources/logIn.png" url="login.xhtml"/>
+                <p:menuitem value="Sign Up" icon="/resources/signUp.png" url="signUpPage1.xhtml"/>
+                <p:menuitem value="Recover Password" icon="/resources/recoverPassword.png" url="lostPassword.xhtml"/>
+            </p:dock>
+
+        </c:if>       
+
+
+    </h:body>
+
+</html>

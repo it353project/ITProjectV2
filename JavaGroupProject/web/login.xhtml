@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Login Page</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="masterTemplate.xhtml">
+            
+            <ui:define name="top_link">
+                <div align="right">
+                <h:link value="Log In" outcome="login.xhtml"/> |
+                <h:link value="Create Account" outcome="signUpPage1.xhtml"/>
+                </div>
+            </ui:define>
+            
+            
+            <ui:define name="content">
+                <center><br/><h2>Log In to Your Account</h2></center>
+                <center>
+                    <div id="login" style ="width:400px; height:260px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+
+
+                        <br/><br/><br/>
+
+                        <h:form>
+
+                            <p:inputText placeholder="ULID" id="userNameID" value="#{loginController.theModel.userName}"/> <br/> <br/>
+                            <p:password placeholder="Password" redisplay="false" id="passwordID"  value="#{loginController.theModel.password}"/> <br/><br/>
+                            <div>
+                                <font color="red">
+                                    <em> 
+                                        <h:outputText id="resultStr" value="#{loginController.loginValidaton}" /><br/><br/>
+                                    </em>
+                                </font>
+                            </div>
+                            <h:commandButton value="Log In" id="submitID" style="width: 200px" action="#{loginController.authenticateUser()}"/> <br/> <br/>
+                            <h:link value="Forgot Your Password?" outcome="lostPassword.xhtml" /> 
+
+                        </h:form> 
+                    </div></center>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+

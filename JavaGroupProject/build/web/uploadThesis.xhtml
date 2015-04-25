@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Upload My Work</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="masterTemplate.xhtml">
+
+            <ui:define name="top_link">
+                <div align="right">
+                    <h:form> <h:commandLink value="Log Out" action="#{loginController.logout()}"/> </h:form>                
+                </div>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form  enctype="multipart/form-data">
+                    <center>
+
+                        <h:link value="Upload" outcome="uploadThesis.xhtml"/> | 
+                        <h:link value="Search" outcome="searchForm.xhtml"/> |
+                        <h:commandLink value="Update" action="#{updateController.retrieveThesis(loginController.theModel.userName, uploadController.theThesisModel.courseID)}"/>
+                        <hr/>
+                    </center>
+                    <center><h2>Upload Thesis</h2></center> <center>
+                        <div id="login" style ="width:920px; height:460px; margin: 0 auto; margin-top: 25px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+
+
+
+
+                            <p:panelGrid style="background-color: #EAEBD8; border-color: black; border: hidden" >
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        <br/>Course Number
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <br/><p:inputText id="courseNoID"  value="#{uploadController.theThesisModel.courseID}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; vertical-align: bottom;  border-color: white; border: hidden">
+                                        Abstract
+                                    </p:column>
+
+                                </p:row> 
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Semester Completed
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="semsterID" value="#{uploadController.theThesisModel.semesterName}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column rowspan="5" style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputTextarea rows="10" cols="62" id="abstractID" value="#{uploadController.theThesisModel.projectAbstract}"/>
+                                    </p:column>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Title
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="topicID" value="#{uploadController.theThesisModel.topic}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Keywords
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="keyWordsID"  value="#{uploadController.theThesisModel.keywords}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Live Link
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="livelinkID"  value="#{uploadController.theThesisModel.liveLink}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Screencast
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="screencastID"  value="#{uploadController.theThesisModel.screencastLink}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; text-align: right; border-color: white; border: hidden">
+                                        Committee Chair
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8">
+                                        <p:inputText id="chairID"  value="#{uploadController.theThesisModel.committeeChair}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column rowspan="3" style="background-color: #EAEBD8; vertical-align: top; text-align: right; border-color: white; border: hidden">
+                                        <br/>Committee Members 
+                                    </p:column>
+
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden"><br/>
+                                        <p:inputText id="member1ID"  value="#{uploadController.theThesisModel.committeMember1}">
+                                        </p:inputText>
+                                    </p:column>
+
+                                    <p:column rowspan="3" style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <fieldset>
+                                            <legend>Documentation</legend><br/>
+                                            <div id="uploadthesisbutton">
+                                                <p:fileUpload fileUploadListener="#{uploadController.upload}" allowTypes="/(\.|\/)(docx?|txt|zip)$/" sizeLimit="1000000"/>
+
+                                                <div><em>
+                                                        <h:commandLink value="#{uploadController.uploadFileName}" action="#{uploadController.uploadLink}"/>
+                                                        <h:outputText id="resultStr" value="#{uploadController.documentUploadResult}" /><br/><br/>
+
+                                                    </em></div>
+                                            </div>
+                                        </fieldset>
+                                    </p:column>
+
+                                </p:row>
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="member2ID"  value="#{uploadController.theThesisModel.committeMember2}">
+                                        </p:inputText>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column style="background-color: #EAEBD8; border-color: white; border: hidden">
+                                        <p:inputText id="member3ID"  value="#{uploadController.theThesisModel.committeMember3}">
+                                        </p:inputText>
+                                    </p:column>
+                                </p:row>
+
+                                <p:row>
+                                    <p:column colspan="3" style="background-color: #EAEBD8">
+                                        <br/>
+                                        <center>
+                                            <h:outputText id="formResultStr" value="#{uploadController.formValidationMessage}" /><br/>
+                                            <h:commandButton value="Submit" action="#{uploadController.authenticateSubmission(loginController.theModel.userName)}"/>
+                                        </center>
+                                    </p:column>
+                                </p:row>
+
+                            </p:panelGrid>
+
+                        </div></center>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+
+</html>
