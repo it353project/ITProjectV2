@@ -317,7 +317,7 @@ public class SearchDAOImpl implements SearchDAO {
         try {         
             String myDB = "jdbc:derby://localhost:1527/IT353";  
             Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
-            Statement stmt = DBConn.createStatement();
+            Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery(query);
             DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
             String[] keywords = new String[20];
@@ -341,7 +341,7 @@ public class SearchDAOImpl implements SearchDAO {
 
                     keywords[keywordCounter] = rs.getString("KEYWORD");
 
-                    aView.setKeywords(keywords);
+                    
                     Clob clob = rs.getClob("ABSTRACT");
                     if (clob != null) {  
                         aView.setAbstractCLOB(clob.getSubString(1, (int) clob.length()));
@@ -352,24 +352,28 @@ public class SearchDAOImpl implements SearchDAO {
                     aView.setUploadDate(df.format(rs.getDate("UPLOADDATE"))); 
                     
                     /* advance the cursor by one to peek at the next row */
-                    while(nextCounter == 0){
-                        while(rs.next()){
-                            if (thesisID == Integer.parseInt(rs.getString("THESISID"))){
-                                keywordCounter++;
-                            keywords[keywordCounter] = rs.getString("KEYWORD");
-                            }else{
-                                nextCounter = 1;
-                            }
-                            if(!rs.next()){
-                                nextCounter = 1;
-                                EOF = true;
-                            }
+                   
+                    while(rs.next() && nextCounter == 0){
+                        if (thesisID == Integer.parseInt(rs.getString("THESISID"))){
+                            keywordCounter++;
+                        keywords[keywordCounter] = rs.getString("KEYWORD");
+                        }else{
+                            nextCounter = 1;
+                        }
+                        if(!rs.next()){
+                            EOF = true;
                         }
                     }
                     if(!EOF){
                         rs.previous();
                     }
             }
+            keywordCounter++;
+            String[] keywordsFinal = new String[keywordCounter];
+            for (int i = 0; i < keywordCounter; i++){
+                keywordsFinal[i] = keywords[i];
+            }
+            aView.setKeywords(keywordsFinal);
             
             rs.close();
             stmt.close();
@@ -378,7 +382,7 @@ public class SearchDAOImpl implements SearchDAO {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
-                   
+        
         return aView;
     }
     
