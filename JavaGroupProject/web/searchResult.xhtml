@@ -8,7 +8,7 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        
+
         <h:outputStylesheet name="./css/default.css"/>
         <h:outputStylesheet name="./css/cssLayout.css"/>
         <title>Search Results</title>
@@ -24,47 +24,64 @@
         <div id="content" class="center_content">
             <ui:insert name="content">
                 <br/><br/><center><h2>Search Results</h2></center>
-               <center>
-                    <div id="login" style ="width:400px; height:260px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+                <center>
+                    <div id="login" style ="width:600px; height:460px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
 
 
                         <br/><br/><br/>
-                    <h:form>
-                        <p:dataTable id="voteTallyTableID3" value="#{searchController.searchList}" var="aRow">
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Thesis ID"/>
+                        <h:form>
+                            <p:dataTable id="voteTallyTableID3" value="#{searchController.searchList}" var="aRow"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                         paginator="true" rows="10" style="margin-bottom:20px">
+                                <f:facet name="{Exporters}">
+
+                                    <h:commandLink style="float: right">
+                                        <p:graphicImage library="images" name ="csv.png" width="30"/>
+                                        <p:dataExporter type="csv" target="voteTallyTableID3" fileName="ThesisTrackerSearch"/>
+                                    </h:commandLink>
+
+                                    <h:commandLink style="float: right">
+                                        <p:graphicImage library="images" name ="xml.png" width="30"/>
+                                        <p:dataExporter type="xml" target="voteTallyTableID3" fileName="ThesisTrackerSearch"/>
+                                    </h:commandLink>
+
                                 </f:facet>
-                                <h:outputText value="#{aRow.thesisID}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Author Name"/>
-                                </f:facet>
-                                <h:outputText value="#{aRow.authorName}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Thesis Name"/>
-                                </f:facet>
-                                <h:outputText value="#{aRow.thesisName}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="Upload Date"/>
-                                </f:facet>
-                                <h:outputText value="#{aRow.uploadDate}"/>
-                            </p:column>
-                            <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Details"/>
-                            </f:facet>
-                            <h:commandLink value="View" action="#{searchController.getDetails(aRow.thesisID)}"></h:commandLink>
-                        </p:column>
-                        </p:dataTable>
-                    </h:form>
-                </div>
-               </center>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Thesis ID"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.thesisID}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Author Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.authorName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Thesis Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.thesisName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Upload Date"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.uploadDate}"/>
+                                </p:column>
+                                <p:column exportable="false">
+                                    <f:facet name="header">
+                                        <h:outputText value="Details"/>
+                                    </f:facet>
+                                    <h:commandLink value="View" action="#{searchController.getDetails(aRow.thesisID)}"></h:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                            <h:commandButton id="backId" value="Back" action="searchForm.xhtml"/>
+                        </h:form>
+                    </div>
+                </center>
             </ui:insert>
         </div>
 
