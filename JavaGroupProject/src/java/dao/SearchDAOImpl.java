@@ -181,7 +181,6 @@ public class SearchDAOImpl implements SearchDAO {
             int keywordCounter = 0;
             
             int thesisID = 0;
-
             
             while (rs.next()) {
                 aView = new ViewBean();
