@@ -10,7 +10,7 @@
         
         <h:outputStylesheet name="./css/default.css"/>
         <h:outputStylesheet name="./css/cssLayout.css"/>
-        <title>Master Template</title>
+        <title>Search for a Thesis</title>
     </h:head>
 
     <h:body>
@@ -23,16 +23,21 @@
         <div id="content" class="center_content">
             <ui:insert name="content">
                 <br/><br/><center><h2>Search for Thesis/Project</h2></center>
-                <div id="login" class="coreDiv">
+                <center>
+                    <div id="login" style ="width:400px; height:260px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+
+
+                        <br/><br/><br/>
                     <h:form id="searchForm">
-                        <p:inputText id="author" placeholder="Author Name" value="#{searchController.theModel.authorName}"/><br/>
-                        <p:inputText id="courseNo" placeholder="Course ID" value="#{searchController.theModel.courseNo}"/><br/>
-                        <p:inputText id="keywords" placeholder="Keywords" value="#{searchController.theModel.keywords}"/><br/>
+                        <p:inputText id="author" placeholder="Author Name" value="#{searchController.theModel.authorName}"/><br/><br/>
+                        <p:inputText id="courseNo" placeholder="Course ID" value="#{searchController.theModel.courseNo}"/><br/><br/>
+                        <p:inputText id="keywords" placeholder="Keywords" value="#{searchController.theModel.keywords}"/><br/><br/>
                         <p:calendar id="fromDate" value="#{searchController.theModel.startDate}" placeholder="Start Date" pattern="MM-dd-yyyy" mask="true" /> to  
-                        <p:calendar id="toDate" value="#{searchController.theModel.endDate}" placeholder="End Date" pattern="MM-dd-yyyy" mask="true"/> <br/>
-                        <h:commandButton id="submitSearch" value="Search" action="#{searchController.performSearch()}" style="width:200px;height:25px"/>
+                        <p:calendar id="toDate" value="#{searchController.theModel.endDate}" placeholder="End Date" pattern="MM-dd-yyyy" mask="true"/> <br/><br/>
+                        <h:commandButton id="submitSearch" value="Search" action="#{searchController.performSearch()}" style="width:200px;height:25px"/> <br/><br/>
                     </h:form>
                 </div>
+                </center>
             </ui:insert>
         </div>
 
