@@ -5,6 +5,8 @@
  */
 package controller;
 
+import dao.SearchDAO;
+import dao.SearchDAOImpl;
 import dao.ThesisDAO;
 import dao.ThesisDAOImpl;
 import java.io.File;
@@ -200,6 +202,7 @@ public class UploadController {
             //send email to committee
             for (int i = 0; i < memberCount; i++) {
                 sendEmailForApproval(committeeMembersEmail[i], StudentName);
+                sendEmailToSubscribers();
             }
             setWorkUploaded(true);
         } else {
@@ -237,7 +240,7 @@ public class UploadController {
 
 }
 
-public void copyFile(String fileName, InputStream in, String absoluteDiskPath) {
+    public void copyFile(String fileName, InputStream in, String absoluteDiskPath) {
         try {
 
 //            String relativeWebPath = "\\resources\\uploads\\msabu";
@@ -317,7 +320,71 @@ public void copyFile(String fileName, InputStream in, String absoluteDiskPath) {
             throw new RuntimeException(mex);
         }
     }
+    
+    public void sendEmailToSubscribers(){
+        String keywords = theThesisModel.getKeywords();
+        String keywordHolder[] = keywords.split(",");
+        for(int i = 0; i < keywordHolder.length; i++){
+            String subscriberEmails[] = getSubscriberEmails(keywordHolder[i]);
+            for(int j = 0; j < subscriberEmails.length; j++){
+                sendSubscriberEmail(subscriberEmails[j], keywordHolder[i]);
+            }
+        } 
+        
+        
+        
+    }
 
+    public String[] getSubscriberEmails(String keyword){
+        String emailArray[] = null;
+        SearchDAO aSearchDAO = new SearchDAOImpl();
+        aSearchDAO.getSubscriberEmails(keyword);
+        
+        return emailArray;
+    }
+    
+    public void sendSubscriberEmail(String email, String keyword){
+        // Recipient's email ID needs to be mentioned.
+        //        String to = "msabu@ilstu.edu"; //have to query db to get the email of admin
+        // Sender's email ID needs to be mentioned
+        String from = "msabu@ilstu.edu";
+        //        String accountJustification = theModel.getAccountJustification();
+        // Assuming you are sending email from this host
+        String host = "smtp.ilstu.edu";
+        // Get system properties
+        Properties properties = System.getProperties();
+        // Setup mail server
+        properties.setProperty("mail.smtp.host", host);
+        properties.setProperty("mail.user", "yourID"); // if needed
+        properties.setProperty("mail.password", "yourPassword"); // if needed
+        // Get the default Session object.
+        Session session = Session.getDefaultInstance(properties);
+        try {
+            // Create a default MimeMessage object.
+            MimeMessage message = new MimeMessage(session);
+            // Set From: header field of the header.
+            message.setFrom(new InternetAddress(from));
+            // Set To: header field of the header.
+            message.addRecipient(Message.RecipientType.TO,
+                    new InternetAddress(email));
+            // Set Subject: header field
+            message.setSubject("ISU Thesis Tracker: Thesis Uploaded - " + keyword);
+            String messageBody = "Hi,<br><br>A new project/thesis has been submitted by <studentname> in the "
+                    + "ISU thesis tracker system with the keyword " + keyword + ", which you have subscribed to."
+                    + " Below are the details of the submission.<br><br>"
+                    + "Thesis/Project Title: " + theThesisModel.getTopic() + "<br>"
+                    + "Course Number: " + theThesisModel.getCourseID() + "<br>"
+                    + "<br><br>Best,<br>Thesis Tracker Team<br>";
+            // Send the actual HTML message, as big as you like
+            message.setContent(messageBody,
+                    "text/html");
+            // Send message
+            Transport.send(message);
+            System.out.println("Sent message successfully....");
+        } catch (MessagingException mex) {
+            throw new RuntimeException(mex);
+        }
+    }
 //    public String upload() throws IOException {
 //        InputStream input = file1.getInputStream();
 //        ByteArrayOutputStream output = new ByteArrayOutputStream();

@@ -34,7 +34,10 @@
                         <h:outputText id="screencastLink" escape="false" value="#{searchController.finalSelection.screencastLink}" /><br/>
                         <h:outputText id="liveLink" escape="false" value="#{searchController.finalSelection.liveLink}" /><br/>
                         <h:outputText id="uploadDate" escape="false" value="#{searchController.finalSelection.uploadDate}" /><br/>
-                        <h:commandButton id="showSimilar" value="Show Similar" action="#{searchController.showSimilar()}" />
+                        <p:commandButton id="showSimilar" value="Show Similar" action="#{searchController.showSimilar()}" />   
+                        <p:commandButton value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{searchController.downloadThesis()}" />
+                        </p:commandButton>
                     </h:form>
                 </div>
             </ui:insert>

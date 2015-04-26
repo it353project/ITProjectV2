@@ -19,4 +19,9 @@ public interface SearchDAO {
     public ViewBean detailsRequest(int thesisID);
     public ArrayList findSimilar(ViewBean aView);
     public void incrementViewCount(int thesisID);
+    public ArrayList getCurrentSubscriptions(String userID);
+    public ArrayList getAvailableSubscriptions(String userID);
+    public String[] getSubscriberEmails(String keyword);
+    public void addSubscription(String userID, String keyword);
+    public void removeSubscription(String userID, String keyword);
 }

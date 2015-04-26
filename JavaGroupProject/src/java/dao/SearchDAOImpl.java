@@ -9,6 +9,7 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -161,7 +162,7 @@ public class SearchDAOImpl implements SearchDAO {
     public ArrayList performSearch(String query){
             ArrayList viewCollection = new ArrayList(); 
 
-           try {
+        try {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
         } catch (ClassNotFoundException e) {
             System.err.println(e.getMessage());
@@ -373,7 +374,149 @@ public class SearchDAOImpl implements SearchDAO {
     
     public void incrementViewCount(int thesisID){
         String sqlSelect = "SELECT IT353.THESIS.NOTIMESDOWN FROM IT353.THESIS WHERE IT353.THESIS.THESISID = " + thesisID;
-        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESDOWN ";
+        int noTimesDown = getNoTimesDown(sqlSelect);
+        noTimesDown++;
+        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESDOWN = " + noTimesDown + " WHERE IT353.THESIS.THESIS = " + thesisID;
+        setNoTimesDown(sqlUpdate);
     }
     
+    private int getNoTimesDown(String query){
+        int noTimesDown = 0;
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+        
+        try {         
+            String myDB = "jdbc:derby://localhost:1527/IT353";  
+            Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
+            Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery(query);
+            noTimesDown = rs.getInt("NOTIMESDOWN");
+            rs.close();
+            stmt.close();
+            DBConn.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return noTimesDown;
+    }
+    
+    private int setNoTimesDown(String query){
+        int rowCount = 0;
+        
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+            // if doing the above in Oracle: DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+            // if doing the above in Oracle:  String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            Connection DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+            // With the connection made, create a statement to talk to the DB server.
+            // Create a SQL statement to query, retrieve the rows one by one (by going to the
+            // columns), and formulate the result string to send back to the client.
+            Statement stmt = DBConn.createStatement();
+
+            //first get the thesisid for the submission being updated
+            
+            rowCount = stmt.executeUpdate(query);
+             } catch (SQLException e) {
+            System.err.println("ERROR: Problems with SQL insert/select/update in UpdateThesis()");
+            System.err.println(e.getMessage());
+        }
+        
+        return rowCount;
+    }
+    
+    public ArrayList getCurrentSubscriptions(String userID){
+        String sqlSelect = "SELECT IT353.KEYWORD.KEYWORD FROM IT353.KEYWORD WHERE"
+                + "IT353.ACCOUNT.ULID = '" + userID;
+        return getUserSubscriptions(sqlSelect);
+    }
+    
+    public void addSubscription(String userID, String keyword){
+        String insertStatement = "INSERT INTO IT353.SUBSCRIPTION VALUES";
+    }
+    
+    public void removeSubscription(String userID, String keyword){
+        String deleteStatement = "DELETE FROM IT353.SUBSCRIPTION WHERE IT353.SUBSCRIPTION.ACCOUNTID = '" + userID + "' AND IT353.KEYWORD.KEYWORD = '" + keyword + "'";
+    }    
+    public ArrayList getAvailableSubscriptions(String userID){
+        ArrayList availableSubscriptions = null;
+        
+        return availableSubscriptions;
+    }    
+    
+    public String[] getSubscriberEmails(String keyword){
+        String sqlSelect = "SELECT IT353.ACCOUNT.EMAIL FROM IT353.ACCOUNT WHERE IT353.KEYWORD.KEYWORD = " + keyword;
+        return emailSearch(sqlSelect);
+    }
+    
+    private String[] emailSearch(String query){
+        String emails[] = null;
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+        
+        try {         
+            String myDB = "jdbc:derby://localhost:1527/IT353";  
+            Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
+            Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery(query);
+            
+            int counter = 0;
+            
+            while(rs.next()){
+                emails[counter] = rs.getString("EMAIL");
+                counter++;
+            }
+            
+            rs.close();
+            stmt.close();
+            DBConn.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return emails;
+    }
+    
+    private ArrayList getUserSubscriptions(String query){
+        ArrayList keywords = null;
+        
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+        
+        try {         
+            String myDB = "jdbc:derby://localhost:1527/IT353";  
+            Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
+            Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery(query);
+                      
+            while(rs.next()){
+                String keyword = new String();
+                keyword = rs.getString("KEYWORD");
+                keywords.add(keyword);
+            }
+            
+            rs.close();
+            stmt.close();
+            DBConn.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return keywords;
+    }
 }

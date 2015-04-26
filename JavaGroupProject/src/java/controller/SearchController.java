@@ -8,14 +8,19 @@ package controller;
 
 import dao.SearchDAO;
 import dao.SearchDAOImpl;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.mail.internet.ParseException;
+import javax.servlet.ServletContext;
 import model.SearchBean;
 import model.ViewBean;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -33,6 +38,7 @@ public class SearchController {
     private Date startDate;
     private Date endDate;
     private List searchList;
+    private StreamedContent file;
     
     public SearchController() {
         theModel = new SearchBean();
@@ -46,7 +52,41 @@ public class SearchController {
     public void setTheModel(SearchBean theModel) {
         this.theModel = theModel;
     }
-       
+
+    /**
+     * @return the theResult
+     */
+    public ViewBean getFinalSelection() {
+        return finalSelection;
+    }
+
+    /**
+     * @param theResult the theResult to set
+     */
+    public void setFinalSelection(ViewBean finalSelection) {
+        this.finalSelection = finalSelection;
+    }
+
+    /**
+     * @return the searchList
+     */
+    public List getSearchList() {
+        return searchList;
+    }
+
+    /**
+     * @param searchList the searchList to set
+     */
+    public void setSearchList(List searchList) {
+        this.searchList = searchList;
+    }
+    
+    public void downloadThesis(){
+        String attachmentLink = finalSelection.getAttachmentLink();
+        InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(attachmentLink);
+        file = new DefaultStreamedContent(stream);
+    }
+    
     public String performSearch(){
         authorName = theModel.getAuthorName();
         courseID = theModel.getCourseNo();
@@ -67,23 +107,6 @@ public class SearchController {
             ){
             validationFlag++;
         }
-
-        
-        
-//        /* If the user doesn't give an end date, but gives a start date, assume today. */
-//        if (theModel.getEndDate() == null && theModel.getStartDate() != null){
-//            Calendar c = new GregorianCalendar();
-//            c.set(Calendar.HOUR_OF_DAY, 0); //anything 0 - 23
-//            c.set(Calendar.MINUTE, 0);
-//            c.set(Calendar.SECOND, 0);
-//            theModel.setEndDate(c.getTime());
-//        }
-//        
-        /* If the user doesn't give a start date, but give an end date, assume 1900
-        if (theModel.getStartDate() == null && theModel.getEndDate() != null){
-            theModel.setStartDate(new GregorianCalendar(1900,1,1).getTime());
-        }*/
-        
         /* Ensure that startDate comes before endDate */
         if(theModel.getStartDate() != null && theModel.getEndDate() != null){
             if (theModel.getStartDate().compareTo(theModel.getEndDate()) > 0){
@@ -122,33 +145,5 @@ public class SearchController {
         theModel.setResults(searchDAO.findSimilar(finalSelection));
         searchList = theModel.getResults();
         return "searchResult.xhtml";
-    }
-    
-    /**
-     * @return the theResult
-     */
-    public ViewBean getFinalSelection() {
-        return finalSelection;
-    }
-
-    /**
-     * @param theResult the theResult to set
-     */
-    public void setFinalSelection(ViewBean finalSelection) {
-        this.finalSelection = finalSelection;
-    }
-
-    /**
-     * @return the searchList
-     */
-    public List getSearchList() {
-        return searchList;
-    }
-
-    /**
-     * @param searchList the searchList to set
-     */
-    public void setSearchList(List searchList) {
-        this.searchList = searchList;
-    }
+    }    
 }

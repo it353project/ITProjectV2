@@ -426,5 +426,5 @@ public class UserDAOImpl implements UserDAO {
         // if insert is successful, rowCount will be set to 1 (1 row inserted successfully). Else, insert failed.
         return rowCount;
     }
-
+    
 }
