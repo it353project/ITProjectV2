@@ -24,7 +24,7 @@ import model.ViewBean;
 @ManagedBean
 @SessionScoped
 public class SearchController {
-    
+
     private SearchBean theModel;
     private ViewBean finalSelection;
     private String authorName;
@@ -33,12 +33,12 @@ public class SearchController {
     private Date startDate;
     private Date endDate;
     private List searchList;
-    
+
     public SearchController() {
         theModel = new SearchBean();
         finalSelection = new ViewBean();
     }
-    
+
     public SearchBean getTheModel() {
         return theModel;
     }
@@ -46,15 +46,15 @@ public class SearchController {
     public void setTheModel(SearchBean theModel) {
         this.theModel = theModel;
     }
-       
-    public String performSearch(){
+
+    public String performSearch(String accountType) {
         authorName = theModel.getAuthorName();
         courseID = theModel.getCourseNo();
         keywords = theModel.getKeywords();
         startDate = theModel.getStartDate();
         endDate = theModel.getEndDate();
         int validationFlag = 0;
-        
+
         
         /* Validate that the form contains valid search criteria */
         /* Check to see that the user's entered at least one search critera. */
@@ -80,9 +80,9 @@ public class SearchController {
 //        }
 //        
         /* If the user doesn't give a start date, but give an end date, assume 1900
-        if (theModel.getStartDate() == null && theModel.getEndDate() != null){
-            theModel.setStartDate(new GregorianCalendar(1900,1,1).getTime());
-        }*/
+         if (theModel.getStartDate() == null && theModel.getEndDate() != null){
+         theModel.setStartDate(new GregorianCalendar(1900,1,1).getTime());
+         }*/
         
         /* Ensure that startDate comes before endDate */
         if(theModel.getStartDate() != null && theModel.getEndDate() != null){
@@ -98,17 +98,24 @@ public class SearchController {
         }else{
             /* Or nothing, invalid search terms */
         }
-        
+
         /* Direct the page to the resultsPage screen if valid */
         if (!theModel.getResults().isEmpty()) {
             searchList = theModel.getResults();
-            return "searchResult.xhtml";
+          if(accountType.equalsIgnoreCase("student"))
+            {
+                return "searchResult.xhtml";
+            }
+            else{
+                    return "adminSearchResult.xhtml";
+                    }
+
         } else {
             return null;
         }
-            
+
     }
-    
+
     public String getDetails(int thesisID){
         /* set the view */
         SearchDAO searchDAO = new SearchDAOImpl();
@@ -117,13 +124,19 @@ public class SearchController {
         return "viewDetails.xhtml";
     }
 
-    public String showSimilar(){
+    public String showSimilar(String accountType){
         SearchDAO searchDAO = new SearchDAOImpl();
         theModel.setResults(searchDAO.findSimilar(finalSelection));
         searchList = theModel.getResults();
-        return "searchResult.xhtml";
+        if(accountType.equalsIgnoreCase("student"))
+            {
+                return "searchResult.xhtml";
+            }
+            else{
+                    return "adminSearchResult.xhtml";
+                    }
     }
-    
+
     /**
      * @return the theResult
      */
@@ -150,5 +163,30 @@ public class SearchController {
      */
     public void setSearchList(List searchList) {
         this.searchList = searchList;
+    }
+    
+    public String performMarkUnmark(int thesisId, String markStatus){
+        SearchDAO aSearch = new SearchDAOImpl();
+        if(markStatus.equalsIgnoreCase("mark")){
+            
+            int markRowCount = aSearch.performMark(thesisId);
+//            finalSelection = aSearch.detailsRequest(thesisId);
+            theModel.setResults(aSearch.searchRequest(theModel));
+                
+//            finalSelection.setHighlightStatus("Unmark");
+        }
+        else //if(markStatus.equalsIgnoreCase("unmark"))
+        {
+            
+            int markRowCount = aSearch.performUnmark(thesisId);
+            theModel.setResults(aSearch.searchRequest(theModel));
+//            finalSelection = aSearch.detailsRequest(thesisId);
+//            finalSelection.setHighlightStatus("Mark");
+        }
+        if (!theModel.getResults().isEmpty()) {
+            searchList = theModel.getResults();
+        return "adminSearchResult.xhtml";
+        }
+        return null;
     }
 }

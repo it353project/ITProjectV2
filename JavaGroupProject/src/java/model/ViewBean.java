@@ -23,6 +23,7 @@ public class ViewBean {
     private String screencastLink;
     private String liveLink;
     private String uploadDate;
+    private String highlightStatus;
 
     /**
      * @return the thesisID
@@ -180,6 +181,20 @@ public String getKeywordString() {
      */
     public void setThesisName(String thesisName) {
         this.thesisName = thesisName;
+    }
+
+    /**
+     * @return the highlightStatus
+     */
+    public String getHighlightStatus() {
+        return highlightStatus;
+    }
+
+    /**
+     * @param highlightStatus the highlightStatus to set
+     */
+    public void setHighlightStatus(String highlightStatus) {
+        this.highlightStatus = highlightStatus;
     }
 
 
