@@ -113,15 +113,26 @@ public class LoginController {
             {
                 theModel.setIsLoggedIn("LoggedIn");
                 attemptCount = 0;
+                //to find the account type for the user
                 String accountType = aLoginDAO.findUserAccountType(theModel);
                 System.out.println("Account type returned =" + accountType);
-                if (accountType.equals("admin")) //the user is an admin
-                {
-                    return "adminLandingPage.xhtml";
-                } else //user is a student
-                {
+                theModel.setAccountType(accountType);
+                System.out.println("accountType from bean: "+ theModel.getAccountType());
+                //to get the firstname, lastname, and email for the user.
+                String[] detailsArray = aLoginDAO.findDetails(theModel);
+                theModel.setFirstName(detailsArray[0]);
+                theModel.setLastName(detailsArray[1]);
+                theModel.setEmail(detailsArray[2]);
+                System.out.println("firstName from controller =" + theModel.getFirstName());
+                System.out.println("lastName from controller =" + theModel.getLastName());
+                System.out.println("Email from controller =" + theModel.getEmail());
+//                if (accountType.equalsIgnoreCase("admin")) //the user is an admin
+//                {
+//                    return "studentLandingPage.xhtml";
+//                } else //user is a student
+//                {
                     return "studentLandingPage.xhtml";
-                }
+//                }
 
             } else //a user may be either in pending status or gave incorrect username/pwd
             {
