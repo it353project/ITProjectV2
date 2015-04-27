@@ -33,11 +33,8 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
     public ArrayList getAvailableSubscriptions(String ULID){
         int accountID = findAccountIDByULID(ULID);
         
-        String sqlSelect = "SELECT IT353.KEYWORD.KEYWORD "
-                + "FROM IT353.KEYWORD "
-                + "JOIN IT353.SUBSCRIPTION ON IT353.SUBSCRIPTION.KEYWORDID = IT353.KEYWORD.KEYWORDID "
-                + "JOIN IT353.ACCOUNT ON IT353.ACCOUNT.ACCOUNTID = IT353.SUBSCRIPTION.ACCOUNTID "
-                + "WHERE IT353.ACCOUNT.ACCOUNTID <> " + accountID;
+        String sqlSelect = "SELECT IT353.KEYWORD.KEYWORD FROM IT353.KEYWORD " +
+        "ORDER BY IT353.KEYWORD.KEYWORD";
         
         return getSubscriptionList(sqlSelect);
     }  
@@ -49,7 +46,7 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
         String insertStatement = "INSERT INTO IT353.SUBSCRIPTION VALUES ("  
                 + subscriptionID + ", "
                 + accountID + ", "
-                + keywordID;
+                + keywordID + ")";
         
         int statusCode = modifySubscriptions(insertStatement);
     }
@@ -219,7 +216,7 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
             
             rs.next();
             highestSubscriptionID = rs.getInt("SUBSCRIPTIONID");
-           
+            highestSubscriptionID++;
             
             rs.close();
             stmt.close();

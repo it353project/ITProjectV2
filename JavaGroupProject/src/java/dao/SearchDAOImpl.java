@@ -376,7 +376,7 @@ public class SearchDAOImpl implements SearchDAO {
         String sqlSelect = "SELECT IT353.THESIS.NOTIMESDOWN FROM IT353.THESIS WHERE IT353.THESIS.THESISID = " + thesisID;
         int noTimesDown = getNoTimesDown(sqlSelect);
         noTimesDown++;
-        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESDOWN = " + noTimesDown + " WHERE IT353.THESIS.THESIS = " + thesisID;
+        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESDOWN = " + noTimesDown + " WHERE IT353.THESIS.THESISID = " + thesisID;
         setNoTimesDown(sqlUpdate);
     }
     
@@ -394,6 +394,7 @@ public class SearchDAOImpl implements SearchDAO {
             Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
             Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery(query);
+            rs.next();
             noTimesDown = rs.getInt("NOTIMESDOWN");
             rs.close();
             stmt.close();
@@ -444,6 +445,7 @@ public class SearchDAOImpl implements SearchDAO {
     public void removeSubscription(String userID, String keyword){
         String deleteStatement = "DELETE FROM IT353.SUBSCRIPTION WHERE IT353.SUBSCRIPTION.ACCOUNTID = '" + userID + "' AND IT353.KEYWORD.KEYWORD = '" + keyword + "'";
     }    
+    
     public ArrayList getAvailableSubscriptions(String userID){
         ArrayList availableSubscriptions = null;
         
@@ -451,12 +453,15 @@ public class SearchDAOImpl implements SearchDAO {
     }    
     
     public String[] getSubscriberEmails(String keyword){
-        String sqlSelect = "SELECT IT353.ACCOUNT.EMAIL FROM IT353.ACCOUNT WHERE IT353.KEYWORD.KEYWORD = " + keyword;
+        int keywordID = findKeywordIDByKeyword(keyword);
+        String sqlSelect = "SELECT IT353.ACCOUNT.EMAIL FROM IT353.ACCOUNT "
+                + "JOIN IT353.SUBSCRIPTION ON IT353.SUBSCRIPTION.ACCOUNTID = IT353.ACCOUNT.ACCOUNTID "
+                + "WHERE IT353.SUBSCRIPTION.KEYWORDID = " + keywordID;
         return emailSearch(sqlSelect);
     }
     
     private String[] emailSearch(String query){
-        String emails[] = null;
+        String[] emails = null;
         try {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
         } catch (ClassNotFoundException e) {
@@ -470,7 +475,13 @@ public class SearchDAOImpl implements SearchDAO {
             Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery(query);
             
-            int counter = 0;
+            int counter = 0;            
+            
+            rs.last();
+            int noOfEmails = rs.getRow();
+            rs.beforeFirst();
+            
+            emails = new String[noOfEmails];
             
             while(rs.next()){
                 emails[counter] = rs.getString("EMAIL");
@@ -518,5 +529,37 @@ public class SearchDAOImpl implements SearchDAO {
             e.printStackTrace();
         }
         return keywords;
+    }
+    
+    private int findKeywordIDByKeyword(String keyword){
+        String query = "SELECT IT353.KEYWORD.KEYWORDID FROM IT353.KEYWORD WHERE IT353.KEYWORD.KEYWORD = '" + keyword + "'";
+        int keywordID = 0;
+        
+        Connection DBConn = null;
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+            DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+
+            Statement stmt = DBConn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery(query);
+            
+            while(rs.next())
+                keywordID = rs.getInt("KEYWORDID");
+            
+            rs.close();
+            stmt.close();
+            } catch (Exception e) {
+                System.err.println("ERROR: Problems with SQL select");
+                e.printStackTrace();
+            }
+            try {
+                DBConn.close();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        return keywordID;
+        
     }
 }

@@ -323,7 +323,7 @@ public class UploadController {
     
     public void sendEmailToSubscribers(){
         String keywords = theThesisModel.getKeywords();
-        String keywordHolder[] = keywords.split(",");
+        String keywordHolder[] = keywords.split(", ");
         for(int i = 0; i < keywordHolder.length; i++){
             String subscriberEmails[] = getSubscriberEmails(keywordHolder[i]);
             for(int j = 0; j < subscriberEmails.length; j++){
@@ -338,7 +338,7 @@ public class UploadController {
     public String[] getSubscriberEmails(String keyword){
         String emailArray[] = null;
         SearchDAO aSearchDAO = new SearchDAOImpl();
-        aSearchDAO.getSubscriberEmails(keyword);
+        emailArray = aSearchDAO.getSubscriberEmails(keyword);
         
         return emailArray;
     }

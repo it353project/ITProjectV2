@@ -33,42 +33,46 @@
 
                         <br/><br/><br/>
                         <h:form>
-                            <h2>Available Subscriptions</h2>
-                            <p:dataTable id="availableSubscriptions" value="#{subscriptionController.availableSubscriptions}" var="aRow"
-                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                         paginator="true" rows="10" style="margin-bottom:20px">
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Keywords"/>
-                                    </f:facet>
-                                    <h:outputText value="#{aRow}"/>
-                                </p:column>
-                                <p:column exportable="false">
-                                    <f:facet name="header">
-                                        <h:outputText value="Action"/>
-                                    </f:facet>
-                                    <h:commandLink value="Subscribe" action="#{subscriptionController.addNewSubscription(aRow, loginController.theModel.userName)}"></h:commandLink>
-                                </p:column>
-                            </p:dataTable><br/>
-                            
+                            <div id="availableDiv" style="float: left;">
+                                <h2>Available Subscriptions</h2>
+                                <p:dataTable id="availableSubscriptions" value="#{subscriptionController.availableSubscriptions}" var="aRow"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="5" style="margin-bottom:20px">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Keywords"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aRow}"/>
+                                    </p:column>
+                                    <p:column exportable="false">
+                                        <f:facet name="header">
+                                            <h:outputText value="Action"/>
+                                        </f:facet>
+                                        <h:commandLink value="Subscribe" action="#{subscriptionController.addNewSubscription(aRow, loginController.theModel.userName)}"></h:commandLink>
+                                    </p:column>
+                                </p:dataTable><br/>
+                            </div>
+                            <div id="currentDiv" style="float: left;">
                             <h2>Current Subscriptions</h2>
-                            <p:dataTable id="currentSubscriptions" value="#{subscriptionController.currentSubscriptions}" var="aRow"
-                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                         paginator="true" rows="10" style="margin-bottom:20px">
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Keywords"/>
-                                    </f:facet>
-                                    <h:outputText value="#{aRow}"/>
-                                </p:column>
-                                <p:column exportable="false">
-                                    <f:facet name="header">
-                                        <h:outputText value="Action"/>
-                                    </f:facet>
-                                    <h:commandLink value="Unsubscribe" action="#{subscriptionController.removeSubscription(aRow, loginController.theModel.userName)}"></h:commandLink>
-                                </p:column>
-                            </p:dataTable>
-                            <h:commandButton id="backId" value="Back" action="searchForm.xhtml"/>
+                                <p:dataTable id="currentSubscriptions" value="#{subscriptionController.currentSubscriptions}" var="aRow"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="5" style="margin-bottom:20px">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Keywords"/>
+                                        </f:facet>
+                                        <h:outputText value="#{aRow}"/>
+                                    </p:column>
+                                    <p:column exportable="false">
+                                        <f:facet name="header">
+                                            <h:outputText value="Action"/>
+                                        </f:facet>
+                                        <h:commandLink value="Unsubscribe" action="#{subscriptionController.removeSubscription(aRow, loginController.theModel.userName)}"></h:commandLink>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                            <div id="clear" style="clear: both;"></div>
+                            <h:commandButton id="backId" value="Back" action="studentLandingPage.xhtml"/>
                         </h:form>
                     </div>
                 </center>

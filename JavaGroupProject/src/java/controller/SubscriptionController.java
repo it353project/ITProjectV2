@@ -44,7 +44,7 @@ public class SubscriptionController {
             
     public void addNewSubscription(String keyword, String ULID){
         SubscriptionDAO subscriptionDAO = new SubscriptionDAOImpl();
-        subscriptionDAO.addSubscription(userName, keyword);
+        subscriptionDAO.addSubscription(ULID, keyword);
     }
     
     public void removeSubscription(String keyword, String ULID){
