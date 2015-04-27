@@ -240,7 +240,7 @@ public class SearchDAOImpl implements SearchDAO {
                    
         return viewCollection;
     }
-
+    
     public ViewBean detailsRequest(int thesisID){
         String baseSelect = "SELECT"
                 + " IT353.ACCOUNT.FIRSTNAME || ' ' || IT353.ACCOUNT.LASTNAME AS AUTHORNAME,"
@@ -503,6 +503,27 @@ public class SearchDAOImpl implements SearchDAO {
         }
         System.out.println("next value = " + nextValue);
         return nextValue;
+    }
+    
+        @Override
+    public ArrayList highlightSearch(){
+        String query = "SELECT IT353.ACCOUNT.FIRSTNAME || ' ' || IT353.ACCOUNT.LASTNAME AS AUTHORNAME, "
+                + "IT353.THESIS.THESISID, "
+                + "IT353.THESIS.THESISNAME, "
+                + "IT353.THESIS.COURSENO,  "
+                + "IT353.THESIS.ABSTRACT,  "
+                + "IT353.THESIS.ATTACHMENTLINK, " 
+                + "IT353.THESIS.SCREENCASTLINK, "
+                + "IT353.THESIS.LIVELINK, "
+                + "IT353.THESIS.UPLOADDATE, "
+                + "IT353.KEYWORD.KEYWORD " 
+                + "FROM IT353.ACCOUNT JOIN IT353.THESIS ON IT353.THESIS.ACCOUNTID = IT353.ACCOUNT.ACCOUNTID " 
+                + "JOIN IT353.KEYASSIGN ON IT353.KEYASSIGN.THESISID = IT353.THESIS.THESISID " 
+                + "JOIN IT353.KEYWORD ON IT353.KEYWORD.KEYWORDID = IT353.KEYASSIGN.KEYWORDID " 
+                + "WHERE IT353.THESIS.THESISID IN (SELECT IT353.HIGHLIGHT.THESISID FROM IT353.HIGHLIGHT)";
+        ArrayList searchResults = performSearch(query);
+        /* Return the search results */
+        return searchResults;
     }
     
 }

@@ -21,4 +21,5 @@ public interface SearchDAO {
     public void incrementViewCount(int thesisID);
     public int performMark(int thesisID);
     public int performUnmark(int thesisID);
+    public ArrayList highlightSearch();
 }
