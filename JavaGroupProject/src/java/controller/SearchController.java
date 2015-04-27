@@ -9,13 +9,11 @@ package controller;
 import dao.SearchDAO;
 import dao.SearchDAOImpl;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.mail.internet.ParseException;
 import javax.servlet.ServletContext;
 import model.SearchBean;
 import model.ViewBean;
@@ -81,10 +79,16 @@ public class SearchController {
         this.searchList = searchList;
     }
     
-    public void downloadThesis(){
+    public StreamedContent downloadThesis(){
         String attachmentLink = finalSelection.getAttachmentLink();
         InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(attachmentLink);
-        file = new DefaultStreamedContent(stream);
+        file = new DefaultStreamedContent(stream, "text/plain", "Thesis.txt");
+        
+        int thesisID = finalSelection.getThesisID();
+        SearchDAO aSearchDAO = new SearchDAOImpl();                
+        aSearchDAO.incrementDownCount(thesisID);
+        
+        return file;
     }
     
     public String performSearch(){

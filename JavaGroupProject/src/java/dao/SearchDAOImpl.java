@@ -373,6 +373,66 @@ public class SearchDAOImpl implements SearchDAO {
     }
     
     public void incrementViewCount(int thesisID){
+        String sqlSelect = "SELECT IT353.THESIS.NOTIMESVIEWED FROM IT353.THESIS WHERE IT353.THESIS.THESISID = " + thesisID;
+        int noTimesViewed = getNoTimesView(sqlSelect);
+        noTimesViewed++;
+        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESVIEWED = " + noTimesViewed + " WHERE IT353.THESIS.THESISID = " + thesisID;
+        setNoTimesView(sqlUpdate);
+    }
+    
+    private int getNoTimesView(String query){
+        int noTimesView = 0;
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+        } catch (ClassNotFoundException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+        
+        try {         
+            String myDB = "jdbc:derby://localhost:1527/IT353";  
+            Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
+            Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            noTimesView = rs.getInt("NOTIMESVIEWED");
+            rs.close();
+            stmt.close();
+            DBConn.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return noTimesView;
+    }
+    
+    private int setNoTimesView(String query){
+        int rowCount = 0;
+        
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+            // if doing the above in Oracle: DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+            // if doing the above in Oracle:  String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            Connection DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+            // With the connection made, create a statement to talk to the DB server.
+            // Create a SQL statement to query, retrieve the rows one by one (by going to the
+            // columns), and formulate the result string to send back to the client.
+            Statement stmt = DBConn.createStatement();
+
+            //first get the thesisid for the submission being updated
+            
+            rowCount = stmt.executeUpdate(query);
+             } catch (SQLException e) {
+            System.err.println("ERROR: Problems with SQL insert/select/update in UpdateThesis()");
+            System.err.println(e.getMessage());
+        }
+        
+        return rowCount;
+    }
+    
+    public void incrementDownCount(int thesisID){
         String sqlSelect = "SELECT IT353.THESIS.NOTIMESDOWN FROM IT353.THESIS WHERE IT353.THESIS.THESISID = " + thesisID;
         int noTimesDown = getNoTimesDown(sqlSelect);
         noTimesDown++;
