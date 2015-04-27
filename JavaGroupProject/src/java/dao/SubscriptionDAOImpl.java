@@ -43,17 +43,23 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
     }  
     
     public void addSubscription(String ULID, String keyword){
+        int subscriptionID = findHighestSubscriptionID();
         int accountID = findAccountIDByULID(ULID);
-        String insertStatement = "INSERT INTO IT353.SUBSCRIPTION VALUES";
+        int keywordID = findKeywordIDByKeyword(keyword);
+        String insertStatement = "INSERT INTO IT353.SUBSCRIPTION VALUES ("  
+                + subscriptionID + ", "
+                + accountID + ", "
+                + keywordID;
         
         int statusCode = modifySubscriptions(insertStatement);
     }
     
     public void removeSubscription(String ULID, String keyword){
         int accountID = findAccountIDByULID(ULID);
+        int keywordID = findKeywordIDByKeyword(keyword);
         String deleteStatement = "DELETE FROM IT353.SUBSCRIPTION "
-                + "JOIN IT353.KEYWORD ON IT353.KEYWORD.KEYWORDID = IT353.SUBSCRIPTION.KEYWORDID "
-                + "WHERE IT353.SUBSCRIPTION.ACCOUNTID = " + accountID + " AND IT353.KEYWORD.KEYWORD = '" + keyword + "'";
+                + "WHERE IT353.SUBSCRIPTION.ACCOUNTID = " + accountID + " AND IT353.SUBSCRIPTION.KEYWORDID = " + keywordID;
+        
         int statusCode = modifySubscriptions(deleteStatement);
     }  
     
@@ -135,6 +141,38 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
         return accoundIT;
     }
     
+    private int findKeywordIDByKeyword(String keyword){
+        String query = "SELECT IT353.KEYWORD.KEYWORDID FROM IT353.KEYWORD WHERE IT353.KEYWORD.KEYWORD = '" + keyword + "'";
+        int keywordID = 0;
+        
+        Connection DBConn = null;
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+            DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+
+            Statement stmt = DBConn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery(query);
+            
+            while(rs.next())
+                keywordID = rs.getInt("KEYWORDID");
+            
+            rs.close();
+            stmt.close();
+            } catch (Exception e) {
+                System.err.println("ERROR: Problems with SQL select");
+                e.printStackTrace();
+            }
+            try {
+                DBConn.close();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        return keywordID;
+        
+    }
+    
     private int getAccountIDByULID(String query){
         Connection DBConn = null;
         int accountID = 0;
@@ -162,6 +200,39 @@ public class SubscriptionDAOImpl implements SubscriptionDAO {
                 System.err.println(e.getMessage());
             }
         return accountID;
+    }
+    
+    private int findHighestSubscriptionID(){
+        String query = "SELECT IT353.SUBSCRIPTION.SUBSCRIPTIONID FROM IT353.SUBSCRIPTION ORDER BY IT353.SUBSCRIPTION.SUBSCRIPTIONID DESC";
+        
+        Connection DBConn = null;
+        int highestSubscriptionID = 0;
+        
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+            DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+
+            Statement stmt = DBConn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery(query);
+            
+            rs.next();
+            highestSubscriptionID = rs.getInt("SUBSCRIPTIONID");
+           
+            
+            rs.close();
+            stmt.close();
+            } catch (Exception e) {
+                System.err.println("ERROR: Problems with SQL select");
+                e.printStackTrace();
+            }
+            try {
+                DBConn.close();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        return highestSubscriptionID;
     }
     
     private int modifySubscriptions(String query){

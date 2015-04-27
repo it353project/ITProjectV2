@@ -202,8 +202,8 @@ public class UploadController {
             //send email to committee
             for (int i = 0; i < memberCount; i++) {
                 sendEmailForApproval(committeeMembersEmail[i], StudentName);
-                sendEmailToSubscribers();
             }
+            sendEmailToSubscribers();
             setWorkUploaded(true);
         } else {
             setFormValidationMessage("Couldn't save submission. Please check the details.");
@@ -275,10 +275,10 @@ public class UploadController {
     }
 
     public void sendEmailForApproval(String to, String studentName) {
-        // Recipient's email ID needs to be mentioned.
+// Recipient's email ID needs to be mentioned.
 //        String to = "msabu@ilstu.edu"; //have to query db to get the email of admin
         // Sender's email ID needs to be mentioned
-        String from = "msabu@ilstu.edu";
+        String from = "mdgrome@ilstu.edu";
 //        String accountJustification = theModel.getAccountJustification();
         // Assuming you are sending email from this host
         String host = "smtp.ilstu.edu";
@@ -286,10 +286,10 @@ public class UploadController {
         Properties properties = System.getProperties();
         // Setup mail server
         properties.setProperty("mail.smtp.host", host);
-        properties.setProperty("mail.user", "yourID"); // if needed
-        properties.setProperty("mail.password", "yourPassword"); // if needed
+        properties.setProperty("mail.user", "mdgrome"); // if needed
+        properties.setProperty("mail.password", "Z1rconium"); // if needed
         // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
+        Session session = Session.getInstance(properties);
         try {
             // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
@@ -347,7 +347,7 @@ public class UploadController {
         // Recipient's email ID needs to be mentioned.
         //        String to = "msabu@ilstu.edu"; //have to query db to get the email of admin
         // Sender's email ID needs to be mentioned
-        String from = "msabu@ilstu.edu";
+        String from = "mdgrome@ilstu.edu";
         //        String accountJustification = theModel.getAccountJustification();
         // Assuming you are sending email from this host
         String host = "smtp.ilstu.edu";
@@ -355,8 +355,8 @@ public class UploadController {
         Properties properties = System.getProperties();
         // Setup mail server
         properties.setProperty("mail.smtp.host", host);
-        properties.setProperty("mail.user", "yourID"); // if needed
-        properties.setProperty("mail.password", "yourPassword"); // if needed
+        properties.setProperty("mail.user", "mdgrome"); // if needed
+        properties.setProperty("mail.password", "Z1rconium"); // if needed
         // Get the default Session object.
         Session session = Session.getDefaultInstance(properties);
         try {
