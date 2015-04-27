@@ -5,8 +5,11 @@
  */
 package controller;
 
+import dao.SearchDAO;
+import dao.SearchDAOImpl;
 import dao.UserDAO;
 import dao.UserDAOImpl;
+import java.util.List;
 import java.util.Properties;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -16,7 +19,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import model.SearchBean;
 import model.UserBean;
+import model.ViewBean;
 
 /**
  *
@@ -30,10 +35,15 @@ public class LoginController {
     private String loginValidaton;
     private UserBean theModel;
     private int attemptCount;
+    private List highlights;
+    private SearchBean theSearchModel;
+    private ViewBean theViewModel;
 
     public LoginController() {
 //        loginValidaton = "";
         theModel = new UserBean();
+        theSearchModel = new SearchBean();
+        theViewModel = new ViewBean();
         attemptCount = 1;
     }
 
@@ -113,15 +123,26 @@ public class LoginController {
             {
                 theModel.setIsLoggedIn("LoggedIn");
                 attemptCount = 0;
+                //to find the account type for the user
                 String accountType = aLoginDAO.findUserAccountType(theModel);
                 System.out.println("Account type returned =" + accountType);
-                if (accountType.equals("admin")) //the user is an admin
-                {
-                    return "adminLandingPage.xhtml";
-                } else //user is a student
-                {
-                    return "studentLandingPage.xhtml";
-                }
+                theModel.setAccountType(accountType);
+                System.out.println("accountType from bean: "+ theModel.getAccountType());
+                //to get the firstname, lastname, and email for the user.
+                String[] detailsArray = aLoginDAO.findDetails(theModel);
+                theModel.setFirstName(detailsArray[0]);
+                theModel.setLastName(detailsArray[1]);
+                theModel.setEmail(detailsArray[2]);
+                System.out.println("firstName from controller =" + theModel.getFirstName());
+                System.out.println("lastName from controller =" + theModel.getLastName());
+                System.out.println("Email from controller =" + theModel.getEmail());
+//                if (accountType.equalsIgnoreCase("admin")) //the user is an admin
+//                {
+//                    return "studentLandingPage.xhtml";
+//                } else //user is a student
+//                {
+                return "studentLandingPage.xhtml";
+//                }
 
             } else //a user may be either in pending status or gave incorrect username/pwd
             {
@@ -217,6 +238,54 @@ public class LoginController {
             mex.printStackTrace();
         }
 
+    }
+
+    /**
+     * @return the highlights
+     */
+    public List getHighlights() {
+        if(highlights == null){
+        SearchDAO highlightSearch = new SearchDAOImpl();
+        highlights = highlightSearch.highlightSearch();
+        theSearchModel.setResults(highlightSearch.highlightSearch());
+        }
+        
+        return highlights;
+    }
+
+    /**
+     * @param highlights the highlights to set
+     */
+    public void setHighlights(List highlights) {
+        this.highlights = highlights;
+    }
+
+    /**
+     * @return the theSearchModel
+     */
+    public SearchBean getTheSearchModel() {
+        return theSearchModel;
+    }
+
+    /**
+     * @param theSearchModel the theSearchModel to set
+     */
+    public void setTheSearchModel(SearchBean theSearchModel) {
+        this.theSearchModel = theSearchModel;
+    }
+
+    /**
+     * @return the theViewModel
+     */
+    public ViewBean getTheViewModel() {
+        return theViewModel;
+    }
+
+    /**
+     * @param theViewModel the theViewModel to set
+     */
+    public void setTheViewModel(ViewBean theViewModel) {
+        this.theViewModel = theViewModel;
     }
 
 }

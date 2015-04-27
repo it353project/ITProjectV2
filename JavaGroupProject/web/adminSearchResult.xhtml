@@ -10,7 +10,6 @@
     <h:head>
         <title>Search Results</title>
     </h:head>
-
     <h:body>
         <ui:composition template="masterTemplate.xhtml">
             <ui:define name="content">
@@ -18,7 +17,9 @@
                 <center>
                     <div id="login" style ="width:600px; height:380px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
                         <br/><br/><br/>
+
                         <h:form>
+
                             <p:dataTable id="voteTallyTableID3" value="#{searchController.searchList}" var="aRow"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                          paginator="true" rows="8" style="margin-bottom:20px">
@@ -66,9 +67,20 @@
                                     </f:facet>
                                     <h:commandLink value="View" action="#{searchController.getDetails(aRow.thesisID)}"></h:commandLink>
                                 </p:column>
+                                <p:column>
+                                    <center>
+                                    <f:facet name="header">
+                                        <h:outputText value="Mark for Showcase"/>
+                                    </f:facet>
+                                    <h:commandLink value="#{aRow.highlightStatus}" action="#{searchController.performMarkUnmark(aRow.thesisID, aRow.highlightStatus)}"></h:commandLink>
+                                    </center>
+                                </p:column>
+
                             </p:dataTable>
+
                             <h:commandButton id="backId" value="Back" action="searchForm.xhtml"/>
                         </h:form>
+
                     </div>
                 </center>
             </ui:define>

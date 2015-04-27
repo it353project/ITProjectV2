@@ -9,6 +9,7 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -181,7 +182,6 @@ public class SearchDAOImpl implements SearchDAO {
             int keywordCounter = 0;
             
             int thesisID = 0;
-
             
             while (rs.next()) {
                 aView = new ViewBean();
@@ -190,6 +190,13 @@ public class SearchDAOImpl implements SearchDAO {
                     
                     thesisID = Integer.parseInt(rs.getString("THESISID"));
                     aView.setThesisID(Integer.parseInt(rs.getString("THESISID")));
+                    int highlightStatus = findHighlightStatus(thesisID);
+                    if(highlightStatus==0){
+                        aView.setHighlightStatus("Mark");
+                    }
+                    else{
+                        aView.setHighlightStatus("Unmark");
+                    }
                     aView.setThesisName(rs.getString("THESISNAME"));
                     aView.setAuthorName(rs.getString("AUTHORNAME"));
                     aView.setCourseNo(rs.getString("COURSENO"));
@@ -207,32 +214,21 @@ public class SearchDAOImpl implements SearchDAO {
                     aView.setUploadDate(df.format(rs.getDate("UPLOADDATE"))); 
                     int nextThesisID = 0;
                     
-                    /* advance the cursor by one to peek at the next row */               
-                        while(rs.next() && nextCounter == 0){
-                            nextThesisID = Integer.parseInt(rs.getString("THESISID"));
-                            if (thesisID == nextThesisID){
-                                keywordCounter++;
+                    /* advance the cursor by one to peek at the next row */
+                    int rowSaver = rs.getRow();
+                    while(rs.next() && nextCounter == 0){
+                        nextThesisID = Integer.parseInt(rs.getString("THESISID"));
+                        if (thesisID == nextThesisID){
+                            keywordCounter++;
                             keywords[keywordCounter] = rs.getString("KEYWORD");
-                            }else{
-                                nextCounter = 1;
-                            }
-                            if(!rs.next()){
-                                nextCounter = 1;
-                                EOF = true;
-                            }else{
-                                rs.previous();
-                            }
-                        }
-
-                    if(!EOF){
-                        rs.previous();
-                    }
-
-
-
-                                 
+                        }else{
+                            rs.absolute(rowSaver);
+                            nextCounter = 1;
+                        } 
+                    }                            
                 viewCollection.add(aView);
             }
+            
             
             rs.close();
             stmt.close();
@@ -244,7 +240,7 @@ public class SearchDAOImpl implements SearchDAO {
                    
         return viewCollection;
     }
-
+    
     public ViewBean detailsRequest(int thesisID){
         String baseSelect = "SELECT"
                 + " IT353.ACCOUNT.FIRSTNAME || ' ' || IT353.ACCOUNT.LASTNAME AS AUTHORNAME,"
@@ -317,7 +313,7 @@ public class SearchDAOImpl implements SearchDAO {
         try {         
             String myDB = "jdbc:derby://localhost:1527/IT353";  
             Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
-            Statement stmt = DBConn.createStatement();
+            Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery(query);
             DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
             String[] keywords = new String[20];
@@ -335,13 +331,20 @@ public class SearchDAOImpl implements SearchDAO {
                     
                     thesisID = Integer.parseInt(rs.getString("THESISID"));
                     aView.setThesisID(Integer.parseInt(rs.getString("THESISID")));
+                    int highlightStatus = findHighlightStatus(thesisID);
+                    if(highlightStatus==0){
+                        aView.setHighlightStatus("Mark");
+                    }
+                    else{
+                        aView.setHighlightStatus("Unmark");
+                    }
                     aView.setThesisName(rs.getString("THESISNAME"));
                     aView.setAuthorName(rs.getString("AUTHORNAME"));
                     aView.setCourseNo(rs.getString("COURSENO"));
 
                     keywords[keywordCounter] = rs.getString("KEYWORD");
 
-                    aView.setKeywords(keywords);
+                    
                     Clob clob = rs.getClob("ABSTRACT");
                     if (clob != null) {  
                         aView.setAbstractCLOB(clob.getSubString(1, (int) clob.length()));
@@ -352,24 +355,25 @@ public class SearchDAOImpl implements SearchDAO {
                     aView.setUploadDate(df.format(rs.getDate("UPLOADDATE"))); 
                     
                     /* advance the cursor by one to peek at the next row */
-                    while(nextCounter == 0){
-                        while(rs.next()){
-                            if (thesisID == Integer.parseInt(rs.getString("THESISID"))){
-                                keywordCounter++;
+                    int nextThesisID;
+                    int rowSaver = rs.getRow();
+                    while(rs.next() && nextCounter == 0){
+                        nextThesisID = Integer.parseInt(rs.getString("THESISID"));
+                        if (thesisID == nextThesisID){
+                            keywordCounter++;
                             keywords[keywordCounter] = rs.getString("KEYWORD");
-                            }else{
-                                nextCounter = 1;
-                            }
-                            if(!rs.next()){
-                                nextCounter = 1;
-                                EOF = true;
-                            }
-                        }
-                    }
-                    if(!EOF){
-                        rs.previous();
-                    }
+                        }else{
+                            rs.absolute(rowSaver);
+                            nextCounter = 1;
+                        } 
+                    }      
             }
+            keywordCounter++;
+            String[] keywordsFinal = new String[keywordCounter];
+            for (int i = 0; i < keywordCounter; i++){
+                keywordsFinal[i] = keywords[i];
+            }
+            aView.setKeywords(keywordsFinal);
             
             rs.close();
             stmt.close();
@@ -378,8 +382,148 @@ public class SearchDAOImpl implements SearchDAO {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
-                   
+        
         return aView;
+    }
+    
+    public void incrementViewCount(int thesisID){
+        String sqlSelect = "SELECT IT353.THESIS.NOTIMESDOWN FROM IT353.THESIS WHERE IT353.THESIS.THESISID = " + thesisID;
+        String sqlUpdate = "UPDATE IT353.THESIS SET NOTIMESDOWN ";
+    }
+    
+    public int findHighlightStatus(int thesisId){
+        String query = "SELECT COUNT(*) AS THESISCOUNT FROM IT353.HIGHLIGHT WHERE THESISID = "+ thesisId;
+        int thesisCount=0;
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+            // if doing the above in Oracle: DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+            // if doing the above in Oracle:  String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            Connection DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+            // With the connection made, create a statement to talk to the DB server.
+            // Create a SQL statement to query, retrieve the rows one by one (by going to the
+            // columns), and formulate the result string to send back to the client.
+            Statement stmt = DBConn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                thesisCount = Integer.parseInt(rs.getString("THESISCOUNT"));
+            }
+            
+            DBConn.close();
+        } catch (SQLException e) {
+            System.err.println("ERROR: Problems with SQL insert in findHighlightStatus()");
+            System.err.println(e.getMessage());
+        }
+        return thesisCount;
+    }
+    @Override
+    public int performMark(int thesisID){
+        int rowCount = 0;
+        int nextHighlightId = findNextSequenceValue("highlight_id_seq");
+        String markQuery = "INSERT INTO IT353.HIGHlIGHT VALUES (" + nextHighlightId + ", " + thesisID + ")";
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+//            DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            // if doing the above in Oracle: DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+//            String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            // if doing the above in Oracle:  String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            Connection DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+            // With the connection made, create a statement to talk to the DB server.
+            // Create a SQL statement to query, retrieve the rows one by one (by going to the
+            // columns), and formulate the result string to send back to the client.
+            Statement stmt = DBConn.createStatement();
+            rowCount = stmt.executeUpdate(markQuery);
+            System.out.println("Marking rows updated : " + rowCount);
+            
+            DBConn.close();
+        } catch (SQLException e) {
+            System.err.println("ERROR: Problems with SQL select in performMark()");
+            System.err.println(e.getMessage());
+        }
+        return rowCount;
+    }
+    @Override
+    public int performUnmark(int thesisID){
+        int rowCount = 0;
+        String markQuery = "DELETE FROM IT353.HIGHlIGHT WHERE THESISID = " + thesisID;
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+//            DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            // if doing the above in Oracle: DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+//            String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            // if doing the above in Oracle:  String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            Connection DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+            // With the connection made, create a statement to talk to the DB server.
+            // Create a SQL statement to query, retrieve the rows one by one (by going to the
+            // columns), and formulate the result string to send back to the client.
+            Statement stmt = DBConn.createStatement();
+            rowCount = stmt.executeUpdate(markQuery);
+            System.out.println("Marking rows deleted : " + rowCount);
+            
+            DBConn.close();
+        } catch (SQLException e) {
+            System.err.println("ERROR: Problems with SQL select in performUnmark()");
+            System.err.println(e.getMessage());
+        }
+        return rowCount;
+    }
+    
+    public int findNextSequenceValue(String sequenceName) {
+
+        sequenceName = sequenceName.trim().toUpperCase();
+        System.out.println("sequence name = " + sequenceName);
+
+        int nextValue = 0;
+
+        String retrieveIDQuery = "VALUES NEXT VALUE FOR " + sequenceName;
+
+        try {
+            DBHelper.loadDriver("org.apache.derby.jdbc.ClientDriver");
+//            DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            // if doing the above in Oracle: DBHelper.loadDriver("oracle.jdbc.driver.OracleDriver");
+            String myDB = "jdbc:derby://localhost:1527/IT353";
+//            String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            // if doing the above in Oracle:  String myDB = "jdbc:oracle:thin:@oracle.itk.ilstu.edu:1521:ora478";
+            Connection DBConn = DBHelper.connect2DB(myDB, "itkstu", "student");
+            // With the connection made, create a statement to talk to the DB server.
+            // Create a SQL statement to query, retrieve the rows one by one (by going to the
+            // columns), and formulate the result string to send back to the client.
+            Statement stmt = DBConn.createStatement();
+
+            ResultSet rs = stmt.executeQuery(retrieveIDQuery);
+            while (rs.next()) {
+                nextValue = rs.getInt(1);
+            }
+            DBConn.close();
+        } catch (SQLException e) {
+            System.err.println("ERROR: Problems with SQL select in findNextSequenceValue()");
+            System.err.println(e.getMessage());
+        }
+        System.out.println("next value = " + nextValue);
+        return nextValue;
+    }
+    
+        @Override
+    public ArrayList highlightSearch(){
+        String query = "SELECT IT353.ACCOUNT.FIRSTNAME || ' ' || IT353.ACCOUNT.LASTNAME AS AUTHORNAME, "
+                + "IT353.THESIS.THESISID, "
+                + "IT353.THESIS.THESISNAME, "
+                + "IT353.THESIS.COURSENO,  "
+                + "IT353.THESIS.ABSTRACT,  "
+                + "IT353.THESIS.ATTACHMENTLINK, " 
+                + "IT353.THESIS.SCREENCASTLINK, "
+                + "IT353.THESIS.LIVELINK, "
+                + "IT353.THESIS.UPLOADDATE, "
+                + "IT353.KEYWORD.KEYWORD " 
+                + "FROM IT353.ACCOUNT JOIN IT353.THESIS ON IT353.THESIS.ACCOUNTID = IT353.ACCOUNT.ACCOUNTID " 
+                + "JOIN IT353.KEYASSIGN ON IT353.KEYASSIGN.THESISID = IT353.THESIS.THESISID " 
+                + "JOIN IT353.KEYWORD ON IT353.KEYWORD.KEYWORDID = IT353.KEYASSIGN.KEYWORDID " 
+                + "WHERE IT353.THESIS.THESISID IN (SELECT IT353.HIGHLIGHT.THESISID FROM IT353.HIGHLIGHT)";
+        ArrayList searchResults = performSearch(query);
+        /* Return the search results */
+        return searchResults;
     }
     
 }

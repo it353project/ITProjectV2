@@ -17,12 +17,63 @@
                     <h:link value="Account" outcome="studentLandingPage.xhtml"/>
                     <hr/>
                 </center><br/>
-                <center><h2>Your Submissions</h2></center>
-                <div id="login" style ="width:650px; height:360px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
-                    <center>Welcome Student
+                <center><h2>Thesis Showcase</h2></center>
+                <center>
+                    <div id="login" style ="width:600px; height:380px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
+                        <br/><br/><br/>
+                        <h:form>
+                            <p:dataTable id="voteTallyTableID3" value="#{loginController.highlights}" var="aRow"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                         paginator="true" rows="8" style="margin-bottom:20px">
+                                <f:facet name="{Exporters}">
 
-                    </center>
-                </div>
+                                    <h:commandLink style="float: right">
+                                        <p:graphicImage library="images" name ="csv.png" width="30"/>
+                                        <p:dataExporter type="csv" target="voteTallyTableID3" fileName="ThesisTrackerSearch"/>
+                                    </h:commandLink>
+
+                                    <h:commandLink style="float: right">
+                                        <p:graphicImage library="images" name ="xml.png" width="30"/>
+                                        <p:dataExporter type="xml" target="voteTallyTableID3" fileName="ThesisTrackerSearch"/>
+                                    </h:commandLink>
+
+                                </f:facet>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Thesis ID"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.thesisID}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Author Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.authorName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Thesis Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.thesisName}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Upload Date"/>
+                                    </f:facet>
+                                    <h:outputText value="#{aRow.uploadDate}"/>
+                                </p:column>
+                                <p:column exportable="false">
+                                    <f:facet name="header">
+                                        <h:outputText value="Details"/>
+                                    </f:facet>
+                                    <h:commandLink value="View" action="#{searchController.getDetails(aRow.thesisID)}"></h:commandLink>
+                                </p:column>
+                            </p:dataTable>
+<!--                            <h:commandButton id="backId" value="Back" action="searchForm.xhtml"/>-->
+                        </h:form>
+                    </div>
+                </center>
             </ui:define>
         </ui:composition>
     </h:body>

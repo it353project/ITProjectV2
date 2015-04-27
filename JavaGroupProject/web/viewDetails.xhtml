@@ -34,7 +34,7 @@
                         <h:outputText id="screencastLink" escape="false" value="#{searchController.finalSelection.screencastLink}" /><br/>
                         <h:outputText id="liveLink" escape="false" value="#{searchController.finalSelection.liveLink}" /><br/>
                         <h:outputText id="uploadDate" escape="false" value="#{searchController.finalSelection.uploadDate}" /><br/>
-                        <h:commandButton id="showSimilar" value="Show Similar" action="#{searchController.showSimilar()}" />
+                        <h:commandButton id="showSimilar" value="Show Similar" action="#{searchController.showSimilar(loginController.theModel.accountType)}" />
                     </h:form>
                 </div>
             </ui:insert>

@@ -18,6 +18,7 @@ public interface UserDAO {
     public int checkUserName(String userName);
     
     public int findAccount(UserBean aSignUp);
+    public String[] findDetails(UserBean aLogin);
     public int findPendingAccount(UserBean aLogin);
     public int findDeniedAccount(UserBean aLogin);
     public String findUserAccountType(UserBean aLogin);
