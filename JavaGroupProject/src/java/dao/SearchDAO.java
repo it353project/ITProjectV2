@@ -25,4 +25,7 @@ public interface SearchDAO {
     public String[] getSubscriberEmails(String keyword);
     public void addSubscription(String userID, String keyword);
     public void removeSubscription(String userID, String keyword);
+    public int performMark(int thesisID);
+    public int performUnmark(int thesisID);
+    public ArrayList highlightSearch();
 }

@@ -1,29 +1,26 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8' ?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
     <h:head>
-        <title>My Student Account</title>
+        <title>Search Results</title>
     </h:head>
     <h:body>
         <ui:composition template="masterTemplate.xhtml">
             <ui:define name="content">
-                <center>
-                    <h:link value="Upload" outcome="uploadThesis.xhtml"/> | 
-                    <h:link value="Search" outcome="searchForm.xhtml"/> |
-
-                    <h:link value="Subscriptions" outcome="subscriptions.xhtml"/>
-                    <hr/>
-                </center><br/>
-                <center><h2>Thesis Showcase</h2></center>
+                <br/><br/><center><h2>Search Results</h2></center>
                 <center>
                     <div id="login" style ="width:600px; height:380px; margin: 0 auto; margin-top: 50px; margin-bottom: 50px; border: 1px solid #000; background-color: #EAEBD8">
                         <br/><br/><br/>
+
                         <h:form>
-                            <p:dataTable id="voteTallyTableID3" value="#{loginController.highlights}" var="aRow"
+
+                            <p:dataTable id="voteTallyTableID3" value="#{searchController.searchList}" var="aRow"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                          paginator="true" rows="8" style="margin-bottom:20px">
                                 <f:facet name="{Exporters}">
@@ -39,7 +36,6 @@
                                     </h:commandLink>
 
                                 </f:facet>
-
 
                                 <p:column>
                                     <f:facet name="header">
@@ -71,13 +67,22 @@
                                     </f:facet>
                                     <h:commandLink value="View" action="#{searchController.getDetails(aRow.thesisID)}"></h:commandLink>
                                 </p:column>
+                                <p:column>
+                                    <center>
+                                    <f:facet name="header">
+                                        <h:outputText value="Mark for Showcase"/>
+                                    </f:facet>
+                                    <h:commandLink value="#{aRow.highlightStatus}" action="#{searchController.performMarkUnmark(aRow.thesisID, aRow.highlightStatus)}"></h:commandLink>
+                                    </center>
+                                </p:column>
+
                             </p:dataTable>
-<!--                            <h:commandButton id="backId" value="Back" action="searchForm.xhtml"/>-->
+
+                            <h:commandButton id="backId" value="Back" action="searchForm.xhtml"/>
                         </h:form>
+
                     </div>
                 </center>
-
-
             </ui:define>
         </ui:composition>
     </h:body>

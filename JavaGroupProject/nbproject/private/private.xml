@@ -3,19 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/model/SearchBean.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/SearchDAO.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/SubscriptionDAOImpl.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/SearchDAOImpl.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/UserDAO.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/ThesisDAOImpl.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/web/viewDetails.xhtml</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/LoginController.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/web/searchResult.xhtml</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/UploadController.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/SearchController.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/UserDAOImpl.java</file>
-            <file>file:/D:/Users/it3530219/Documents/GitHub/ITProjectV2/JavaGroupProject/web/searchForm.xhtml</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/web/subscriptions.xhtml</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/SubscriptionDAOImpl.java</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/UploadController.java</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/SubscriptionController.java</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/SearchController.java</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/SubscriptionDAO.java</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/controller/UpdateController.java</file>
+            <file>file:/C:/Users/Mystrunner/Documents/GitHub/ITProjectV2/JavaGroupProject/src/java/dao/SearchDAO.java</file>
         </group>
     </open-files>
 </project-private>

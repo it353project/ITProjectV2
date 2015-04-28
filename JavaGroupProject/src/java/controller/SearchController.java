@@ -19,6 +19,7 @@ import model.SearchBean;
 import model.ViewBean;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import javax.mail.internet.ParseException;
 
 /**
  *
@@ -95,7 +96,7 @@ public class SearchController {
         return file;
     }
  
-    public String performSearch(){
+    public String performSearch(String accountType){
         authorName = theModel.getAuthorName();
         courseID = theModel.getCourseNo();
         keywords = theModel.getKeywords();
@@ -133,7 +134,13 @@ public class SearchController {
         /* Direct the page to the resultsPage screen if valid */
         if (!theModel.getResults().isEmpty()) {
             searchList = theModel.getResults();
-            return "searchResult.xhtml";
+            if(accountType.equalsIgnoreCase("student"))
+            {
+                return "searchResult.xhtml";
+            }
+            else{
+                    return "adminSearchResult.xhtml";
+            }
         } else {
             return null;
         }
@@ -148,10 +155,42 @@ public class SearchController {
         return "viewDetails.xhtml";
     }
 
-    public String showSimilar(){
+    public String showSimilar(String accountType){
         SearchDAO searchDAO = new SearchDAOImpl();
         theModel.setResults(searchDAO.findSimilar(finalSelection));
         searchList = theModel.getResults();
-        return "searchResult.xhtml";
+        if(accountType.equalsIgnoreCase("student"))
+            {
+                return "searchResult.xhtml";
+
+            }
+            else{
+                    return "adminSearchResult.xhtml";
+            }
     }    
+    
+     public String performMarkUnmark(int thesisId, String markStatus){
+        SearchDAO aSearch = new SearchDAOImpl();
+        if(markStatus.equalsIgnoreCase("mark")){
+            
+            int markRowCount = aSearch.performMark(thesisId);
+//            finalSelection = aSearch.detailsRequest(thesisId);
+            theModel.setResults(aSearch.searchRequest(theModel));
+                
+//            finalSelection.setHighlightStatus("Unmark");
+        }
+        else //if(markStatus.equalsIgnoreCase("unmark"))
+        {
+            
+            int markRowCount = aSearch.performUnmark(thesisId);
+            theModel.setResults(aSearch.searchRequest(theModel));
+//            finalSelection = aSearch.detailsRequest(thesisId);
+//            finalSelection.setHighlightStatus("Mark");
+        }
+        if (!theModel.getResults().isEmpty()) {
+            searchList = theModel.getResults();
+        return "adminSearchResult.xhtml";
+        }
+        return null;
+    }
 }
