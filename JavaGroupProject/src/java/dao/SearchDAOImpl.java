@@ -454,8 +454,9 @@ public class SearchDAOImpl implements SearchDAO {
             Connection DBConn = DriverManager.getConnection(myDB, "itkstu", "student");
             Statement stmt = DBConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             ResultSet rs = stmt.executeQuery(query);
-            rs.next();
-            noTimesDown = rs.getInt("NOTIMESDOWN");
+            while(rs.next()){
+            noTimesDown = Integer.parseInt(rs.getString("NOTIMESDOWN"));
+            }
             rs.close();
             stmt.close();
             DBConn.close();
@@ -463,7 +464,7 @@ public class SearchDAOImpl implements SearchDAO {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
-        
+      
         return noTimesDown;
     }
     

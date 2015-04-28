@@ -250,7 +250,7 @@ public class UploadController {
 
             System.out.println("absoluteFileName=" + absoluteFileName);
             setUploadFileName(fileName);
-            theThesisModel.setDeliverableLink(absoluteFileName);
+            theThesisModel.setDeliverableLink(fileName);
 
             File file = new File(absoluteFileName);
 

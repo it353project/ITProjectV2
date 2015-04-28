@@ -81,7 +81,8 @@ public class SearchController {
     
     public StreamedContent downloadThesis(){
         String attachmentLink = finalSelection.getAttachmentLink();
-        InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(attachmentLink);
+        String link = "/resources/uploads/msabu/"+attachmentLink;
+        InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(link);
         file = new DefaultStreamedContent(stream, "text/plain", "Thesis.txt");
         
         int thesisID = finalSelection.getThesisID();
@@ -90,7 +91,10 @@ public class SearchController {
         
         return file;
     }
-    
+        public StreamedContent getFile() {
+        return file;
+    }
+ 
     public String performSearch(){
         authorName = theModel.getAuthorName();
         courseID = theModel.getCourseNo();
